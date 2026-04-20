@@ -26,7 +26,10 @@ export default function CameraCalculator() {
   const [selectedFormat, setSelectedFormat] = useState<VideoFormat | null>(null);
   
   const [cardSize, setCardSize] = useState(128);
-  const [mode, setMode] = useState<'photo' | 'video' | 'both' | 'time2gb'>('photo');
+  const [mode, setMode] = useState<'photo' | 'video' | 'both'>('photo');
+  
+  // Nýtt State fyrir Toggle rofann inni í Vídeó
+  const [videoCalcMode, setVideoCalcMode] = useState<'cardToTime' | 'timeToCard'>('cardToTime');
   
   const [photoCount, setPhotoCount] = useState<number | ''>('');
   const [targetHours, setTargetHours] = useState<number | ''>('');
@@ -71,18 +74,18 @@ export default function CameraCalculator() {
     <div className="glass-card">
       <h2>Gagnamagnsreiknivél</h2>
       
+      {/* MAIN TABS */}
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
         {[
           { id: 'photo', label: 'Myndir' },
           { id: 'video', label: 'Vídeó' },
-          { id: 'both', label: 'Bæði' },
-          { id: 'time2gb', label: 'Tími -> GB' }
+          { id: 'both', label: 'Bæði' }
         ].map((m) => (
           <button 
             key={m.id}
             onClick={() => setMode(m.id as any)} 
             style={{ 
-              flex: '1 1 20%', padding: '0.8rem', 
+              flex: '1 1 30%', padding: '0.8rem', 
               background: mode === m.id ? '#f59e0b' : '#333', 
               border: 'none', borderRadius: '10px', color: 'white', cursor: 'pointer', fontWeight: 'bold'
             }}
@@ -100,7 +103,7 @@ export default function CameraCalculator() {
         </select>
       </div>
 
-      {mode !== 'photo' && selectedCamera && (
+      {(mode === 'video' || mode === 'both') && selectedCamera && (
         <div className="input-group">
           <label>Vídeóstillingar:</label>
           <select onChange={(e) => setSelectedFormat(videoFormats.find(f => f.id === Number(e.target.value)) || null)}>
@@ -108,6 +111,24 @@ export default function CameraCalculator() {
               <option key={f.id} value={f.id}>{f.resolution} - {f.fps}fps ({f.codec})</option>
             ))}
           </select>
+        </div>
+      )}
+
+      {/* TOGGLE SWITCH FYRIR VÍDEÓ */}
+      {mode === 'video' && selectedCamera && selectedFormat && (
+        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', background: 'rgba(0,0,0,0.4)', padding: '0.5rem', borderRadius: '12px' }}>
+          <button 
+            onClick={() => setVideoCalcMode('cardToTime')}
+            style={{ flex: 1, padding: '0.6rem', background: videoCalcMode === 'cardToTime' ? '#444' : 'transparent', color: videoCalcMode === 'cardToTime' ? '#f59e0b' : '#ccc', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', transition: '0.2s' }}
+          >
+            Reikna Tíma úr Korti
+          </button>
+          <button 
+            onClick={() => setVideoCalcMode('timeToCard')}
+            style={{ flex: 1, padding: '0.6rem', background: videoCalcMode === 'timeToCard' ? '#444' : 'transparent', color: videoCalcMode === 'timeToCard' ? '#f59e0b' : '#ccc', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', transition: '0.2s' }}
+          >
+            Reikna GB úr Tíma
+          </button>
         </div>
       )}
 
@@ -122,7 +143,8 @@ export default function CameraCalculator() {
         </div>
       )}
 
-      {mode === 'time2gb' ? (
+      {/* INPUTS BYGGT Á MODE OG SWITCH */}
+      {mode === 'video' && videoCalcMode === 'timeToCard' ? (
         <div style={{ display: 'flex', gap: '1rem' }}>
           <div className="input-group" style={{ flex: 1 }}>
             <label>Klukkustundir:</label>
@@ -152,24 +174,22 @@ export default function CameraCalculator() {
               </div>
             </>
           ) : mode === 'video' ? (
-            selectedFormat && (
+            selectedFormat && videoCalcMode === 'cardToTime' ? (
               <>
-                <p>Áætlaður upptökutími:</p>
+                <p>Áætlaður upptökutími á {cardSize >= 1024 ? `${cardSize/1024}TB` : `${cardSize}GB`} kort:</p>
                 <div className="highlight-numbers">
                   {formatTime(Math.floor(cardMB / (selectedFormat.mbps * 60)))}
                 </div>
               </>
-            )
-          ) : mode === 'time2gb' ? (
-            selectedFormat && (
+            ) : selectedFormat && videoCalcMode === 'timeToCard' ? (
               <>
-                <p>Áætlað gagnamagn fyrir {tHours}h og {tMins}m:</p>
+                <p>Áætlað pláss fyrir {tHours}h og {tMins}m:</p>
                 <div className="highlight-numbers">
                   {(((tHours * 3600) + (tMins * 60)) * selectedFormat.mbps / 1024).toFixed(1)} GB
                 </div>
                 <small style={{ color: '#aaa' }}>Gagnahraði: {selectedFormat.mbps} MB/s</small>
               </>
-            )
+            ) : null
           ) : (
             selectedFormat && (
               <>
