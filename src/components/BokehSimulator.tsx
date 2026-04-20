@@ -11,7 +11,8 @@ interface Camera {
 interface Lens {
   id: number;
   name: string;
-  focal_length: number;
+  focal_length_min: number;
+  focal_length_max: number;
   max_aperture: number;
 }
 
@@ -24,6 +25,7 @@ export default function BokehSimulator() {
   
   const [aperture, setAperture] = useState<number>(2.8);
   const [distance, setDistance] = useState<number>(2); 
+  const [currentZoom, setCurrentZoom] = useState<number>(50);
   
   const [fgIndex, setFgIndex] = useState<number>(1);
   const [bgIndex, setBgIndex] = useState<number>(1);
@@ -40,19 +42,29 @@ export default function BokehSimulator() {
   }, []);
 
   useEffect(() => {
-    if (selectedLens && aperture < selectedLens.max_aperture) {
-      setAperture(selectedLens.max_aperture);
+    if (selectedLens) {
+      if (aperture < selectedLens.max_aperture) {
+        setAperture(selectedLens.max_aperture);
+      }
+      
+      if (currentZoom < selectedLens.focal_length_min) {
+          setCurrentZoom(selectedLens.focal_length_min)
+      } else if (currentZoom > selectedLens.focal_length_max) {
+          setCurrentZoom(selectedLens.focal_length_max)
+      }
     }
-  }, [selectedLens, aperture]);
+  }, [selectedLens]);
 
-  const focalLength = selectedLens?.focal_length || 50; 
+  const focalLength = selectedLens ? currentZoom : 50; 
   const cropFactor = selectedCamera?.crop_factor || 1.0; 
   
   const calculatedBlur = Math.max(0, (focalLength * focalLength) / (aperture * distance * 50));
   
+  const visualZoom = (focalLength / 50) * cropFactor;
+
   return (
     <div className="glass-card" style={{ marginTop: '2rem', background: 'rgba(15, 15, 15, 0.95)' }}>
-      <h2>Bokeh Hermir</h2>
+      <h2>Pro Bokeh Hermir</h2>
       
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
         <div className="input-group" style={{ flex: '1 1 200px' }}>
@@ -71,6 +83,21 @@ export default function BokehSimulator() {
           </select>
         </div>
       </div>
+
+      {selectedLens && selectedLens.focal_length_min !== selectedLens.focal_length_max && (
+         <div className="input-group" style={{ marginBottom: '1.5rem' }}>
+         <label>Aðdráttur (Zoom): <strong>{currentZoom}mm</strong></label>
+         <input 
+           type="range" 
+           min={selectedLens.focal_length_min} 
+           max={selectedLens.focal_length_max} 
+           step="1" 
+           value={currentZoom} 
+           onChange={(e) => setCurrentZoom(Number(e.target.value))} 
+           style={{ width: '100%', marginTop: '0.5rem' }}
+         />
+       </div>
+      )}
 
       <div className="input-group" style={{ marginBottom: '1.5rem' }}>
         <label>Ljósop (f-stop): <strong>f/{aperture.toFixed(1)}</strong></label>
@@ -119,7 +146,8 @@ export default function BokehSimulator() {
       </div>
 
       <div style={{ position: 'relative', width: '100%', height: '500px', overflow: 'hidden', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.2)', background: '#000' }}>
-        <div style={{ width: '100%', height: '100%', transform: `scale(${cropFactor})`, transition: 'transform 0.5s ease', transformOrigin: 'center center' }}>
+        <div style={{ width: '100%', height: '100%', transform: `scale(${visualZoom})`, transition: 'transform 0.5s ease', transformOrigin: 'center center' }}>
+          
           <img 
             src={`/bg/bakgrunnur${bgIndex}.jpg`} 
             alt="Bakgrunnur"
@@ -138,6 +166,7 @@ export default function BokehSimulator() {
               height: '90%', objectFit: 'contain', zIndex: 10
             }} 
           />
+          
         </div>
       </div>
     </div>

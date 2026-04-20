@@ -28,7 +28,6 @@ export default function CameraCalculator() {
   const [cardSize, setCardSize] = useState(128);
   const [mode, setMode] = useState<'photo' | 'video' | 'both'>('photo');
   
-  // Nýtt State fyrir Toggle rofann inni í Vídeó
   const [videoCalcMode, setVideoCalcMode] = useState<'cardToTime' | 'timeToCard'>('cardToTime');
   
   const [photoCount, setPhotoCount] = useState<number | ''>('');
@@ -74,7 +73,6 @@ export default function CameraCalculator() {
     <div className="glass-card">
       <h2>Gagnamagnsreiknivél</h2>
       
-      {/* MAIN TABS */}
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
         {[
           { id: 'photo', label: 'Myndir' },
@@ -114,20 +112,19 @@ export default function CameraCalculator() {
         </div>
       )}
 
-      {/* TOGGLE SWITCH FYRIR VÍDEÓ */}
       {mode === 'video' && selectedCamera && selectedFormat && (
         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', background: 'rgba(0,0,0,0.4)', padding: '0.5rem', borderRadius: '12px' }}>
           <button 
             onClick={() => setVideoCalcMode('cardToTime')}
             style={{ flex: 1, padding: '0.6rem', background: videoCalcMode === 'cardToTime' ? '#444' : 'transparent', color: videoCalcMode === 'cardToTime' ? '#f59e0b' : '#ccc', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', transition: '0.2s' }}
           >
-            Reikna Tíma úr Korti
+            Reikna Tíma
           </button>
           <button 
             onClick={() => setVideoCalcMode('timeToCard')}
             style={{ flex: 1, padding: '0.6rem', background: videoCalcMode === 'timeToCard' ? '#444' : 'transparent', color: videoCalcMode === 'timeToCard' ? '#f59e0b' : '#ccc', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', transition: '0.2s' }}
           >
-            Reikna GB úr Tíma
+            Reikna GB
           </button>
         </div>
       )}
@@ -139,20 +136,20 @@ export default function CameraCalculator() {
             type="number" 
             value={photoCount} 
             onChange={(e) => setPhotoCount(e.target.value === '' ? '' : Number(e.target.value))}
+            style={{ boxSizing: 'border-box' }}
           />
         </div>
       )}
 
-      {/* INPUTS BYGGT Á MODE OG SWITCH */}
       {mode === 'video' && videoCalcMode === 'timeToCard' ? (
         <div style={{ display: 'flex', gap: '1rem' }}>
           <div className="input-group" style={{ flex: 1 }}>
             <label>Klukkustundir:</label>
-            <input type="number" value={targetHours} onChange={(e) => setTargetHours(e.target.value === '' ? '' : Number(e.target.value))} />
+            <input type="number" value={targetHours} onChange={(e) => setTargetHours(e.target.value === '' ? '' : Number(e.target.value))} style={{ boxSizing: 'border-box' }} />
           </div>
           <div className="input-group" style={{ flex: 1 }}>
             <label>Mínútur:</label>
-            <input type="number" value={targetMins} onChange={(e) => setTargetMins(e.target.value === '' ? '' : Number(e.target.value))} />
+            <input type="number" value={targetMins} onChange={(e) => setTargetMins(e.target.value === '' ? '' : Number(e.target.value))} style={{ boxSizing: 'border-box' }} />
           </div>
         </div>
       ) : (
