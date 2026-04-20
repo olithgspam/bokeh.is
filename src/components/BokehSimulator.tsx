@@ -25,7 +25,7 @@ export default function BokehSimulator() {
   
   const [aperture, setAperture] = useState<number>(2.8);
   const [distance, setDistance] = useState<number>(2); 
-  const [currentZoom, setCurrentZoom] = useState<number>(50);
+  const [currentZoom, setCurrentZoom] = useState<number>(50); 
   
   const [fgIndex, setFgIndex] = useState<number>(1);
   const [bgIndex, setBgIndex] = useState<number>(1);
@@ -46,21 +46,23 @@ export default function BokehSimulator() {
       if (aperture < selectedLens.max_aperture) {
         setAperture(selectedLens.max_aperture);
       }
-      
       if (currentZoom < selectedLens.focal_length_min) {
           setCurrentZoom(selectedLens.focal_length_min)
       } else if (currentZoom > selectedLens.focal_length_max) {
           setCurrentZoom(selectedLens.focal_length_max)
       }
     }
-  }, [selectedLens]);
+  }, [selectedLens]); 
 
   const focalLength = selectedLens ? currentZoom : 50; 
   const cropFactor = selectedCamera?.crop_factor || 1.0; 
   
   const calculatedBlur = Math.max(0, (focalLength * focalLength) / (aperture * distance * 50));
   
-  const visualZoom = (focalLength / 50) * cropFactor;
+  const bgZoom = Math.max(1, (focalLength / 16) * cropFactor);
+
+  const fgScale = (focalLength / 50) * (2 / distance) * cropFactor;
+  const safeFgScale = Math.max(0.1, fgScale); 
 
   return (
     <div className="glass-card" style={{ marginTop: '2rem', background: 'rgba(15, 15, 15, 0.95)' }}>
@@ -146,28 +148,32 @@ export default function BokehSimulator() {
       </div>
 
       <div style={{ position: 'relative', width: '100%', height: '500px', overflow: 'hidden', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.2)', background: '#000' }}>
-        <div style={{ width: '100%', height: '100%', transform: `scale(${visualZoom})`, transition: 'transform 0.5s ease', transformOrigin: 'center center' }}>
+        
+        <img 
+          src={`/bg/bakgrunnur${bgIndex}.jpg`} 
+          alt="Bakgrunnur"
+          style={{ 
+            position: 'absolute', top: 0, left: 0,
+            width: '100%', height: '100%', objectFit: 'cover',
+            filter: `blur(${calculatedBlur}px)`,
+            transform: `scale(${bgZoom * 1.05})`,
+            transition: 'transform 0.5s ease, filter 0.3s ease',
+            transformOrigin: 'center center'
+          }} 
+        />
+        
+        <img 
+          src={`/fg/forgrunnur${fgIndex}.png`} 
+          alt="Manneskja"
+          style={{ 
+            position: 'absolute', bottom: 0, left: '50%', 
+            transform: `translateX(-50%) scale(${safeFgScale})`,
+            transformOrigin: 'bottom center',
+            height: '90%', objectFit: 'contain', zIndex: 10,
+            transition: 'transform 0.5s ease'
+          }} 
+        />
           
-          <img 
-            src={`/bg/bakgrunnur${bgIndex}.jpg`} 
-            alt="Bakgrunnur"
-            style={{ 
-              width: '100%', height: '100%', objectFit: 'cover',
-              filter: `blur(${calculatedBlur}px)`,
-              transition: 'filter 0.3s ease',
-              transform: 'scale(1.1)' 
-            }} 
-          />
-          <img 
-            src={`/fg/forgrunnur${fgIndex}.png`} 
-            alt="Manneskja"
-            style={{ 
-              position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)',
-              height: '90%', objectFit: 'contain', zIndex: 10
-            }} 
-          />
-          
-        </div>
       </div>
     </div>
   );
