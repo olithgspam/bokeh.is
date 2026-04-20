@@ -78,6 +78,28 @@ body {
   }
 }
 
+.calc-bg {
+  min-height: 100vh;
+  background: linear-gradient(-45deg, $black 40%, #3b82f6 50%, $black 60%);
+  background-size: 400% 400%;
+  animation: warp-liquid 45s ease-in-out infinite alternate;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bokeh-bg {
+  min-height: 100vh;
+  background: linear-gradient(-45deg, $black 40%, #10b981 50%, $black 60%);
+  background-size: 400% 400%;
+  animation: warp-liquid 60s ease-in-out infinite alternate;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
   .results-box {
     margin-top: 2rem;
     padding-top: 1.5rem;
