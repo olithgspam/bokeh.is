@@ -36,7 +36,7 @@ body {
   padding: 2.5rem;
   max-width: 600px;
   width: 100%;
-  margin-top: 2rem;
+  margin: 2rem auto 0 auto; /* Þetta miðjar kassann á síðunni! */
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 
   h2, h3 {
@@ -54,7 +54,7 @@ body {
       color: #ccc;
     }
 
-    select {
+    select, input[type="number"] {
       width: 100%;
       padding: 12px;
       border-radius: 10px;
@@ -70,7 +70,23 @@ body {
     }
   }
 
-  .menu-card {
+  .results-box {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+    .highlight-numbers {
+      font-size: 2rem;
+      font-weight: bold;
+      color: $gold;
+      margin-top: 0.5rem;
+    }
+  }
+} /* HÉR LOKAST .glass-card */
+
+/* --- ALLT HÉR FYRIR NEÐAN ER FYRIR UTAN .glass-card --- */
+
+.menu-card {
   &:hover {
     transform: translateY(-10px);
     background: rgba(245, 158, 11, 0.3) !important;
@@ -98,18 +114,4 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-  .results-box {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-
-    .highlight-numbers {
-      font-size: 2rem;
-      font-weight: bold;
-      color: $gold;
-      margin-top: 0.5rem;
-    }
-  }
 }

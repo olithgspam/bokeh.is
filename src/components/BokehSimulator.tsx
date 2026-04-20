@@ -52,7 +52,7 @@ export default function BokehSimulator() {
   
   return (
     <div className="glass-card" style={{ marginTop: '2rem', background: 'rgba(15, 15, 15, 0.95)' }}>
-      <h2>Pro Bokeh Hermir</h2>
+      <h2>Bokeh Hermir</h2>
       
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
         <div className="input-group" style={{ flex: '1 1 200px' }}>
