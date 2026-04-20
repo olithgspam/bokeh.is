@@ -1,0 +1,85 @@
+$gold: #f5da0b6d;
+$black: #000000;
+
+body {
+  margin: 0;
+  padding: 0;
+  background: $black;
+  color: #ededed;
+  font-family: sans-serif;
+  min-height: 100vh;
+}
+
+.main-bg {
+  min-height: 100vh;
+  background: linear-gradient(-45deg, $black 40%, $gold 50%, $black 60%);
+  background-size: 400% 400%;
+  animation: warp-liquid 35s ease-in-out infinite alternate;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@keyframes warp-liquid {
+  0% { background-position: 0% 0%; background-size: 100% 100%; }
+  25% { background-position: 100% 50%; background-size: 350% 250%; }
+  50% { background-position: 100% 100%; background-size: 100% 100%; }
+  100% { background-position: 0% 0%; background-size: 100% 100%; }
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  padding: 2.5rem;
+  max-width: 600px;
+  width: 100%;
+  margin-top: 2rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  h2, h3 {
+    color: white;
+    margin-top: 0;
+  }
+
+  .input-group {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: 1px solid rgba($gold, 0.5);
+      font-size: 1rem;
+      outline: none;
+      
+      &:focus {
+        border-color: $gold;
+      }
+    }
+  }
+
+  .results-box {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+    .highlight-numbers {
+      font-size: 2rem;
+      font-weight: bold;
+      color: $gold;
+      margin-top: 0.5rem;
+    }
+  }
+}
