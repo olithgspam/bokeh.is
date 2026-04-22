@@ -22,7 +22,7 @@ Bokeh.is er faglegt vefforrit hannað fyrir kvikmyndagerðarfólk og ljósmyndar
 * **Framendi:** Next.js (App Router), React 19, TypeScript
 * **Bakendi & Gagnagrunnur:** Supabase (PostgreSQL)
 * **Viðmót og Stílar:** SCSS (Sérsniðið "Glassmorphism" útlit með CSS hreyfimyndum)
-* **Hýsing:** Vercel / Netlify
+* **Hýsing:** Netlify
 
 ## Uppsetning og keyrsla (Local Development)
 
